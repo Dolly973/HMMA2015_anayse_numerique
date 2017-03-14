@@ -1,0 +1,42 @@
+int Nbnoeuds = 10;
+func f=8*pi^2* sin(2*pi*x)*sin(2*pi*y);
+func uexact= sin(2*pi*x)*sin(2*pi*y);
+func uexactx = 2*pi*cos(2*pi*x)*sin(2*pi*y);
+func uexacty= 2*pi*cos(2*pi*y)*sin(2*pi*x);
+
+real[int]  l2norm(5);
+for (int i= 0; i<5 ;i++)
+{ 
+mesh Th=square(Nbnoeuds*2^i, Nbnoeuds*2^i, [x,y]);
+fespace Vh(Th,P1);
+Vh uh, vh;
+problem chaleur( uh,vh,solver=LU) = int2d(Th)(dx(uh)*dx(vh)+ dy(uh)*dy(vh)) - int2d(Th)(f*vh) + on (1,2,3,4,uh=0);
+chaleur;
+plot(uh,fill=1);
+l2norm[i]= sqrt(int2d(Th)((uh-uexact)^2));
+}
+for (int i=0;i<5;i++)
+cout << " l2norm " << i << " = "<<  l2norm[i] <<endl; 
+cout <<" taux de convergence = "<< log(l2norm[0]/l2norm[4])/log(16.)  <<endl;
+
+real[int]  H1semiNorm(5);
+for (int i= 0; i<5 ;i++)
+{ 
+mesh Th=square(Nbnoeuds*2^i, Nbnoeuds*2^i, [x,y]);
+fespace Vh(Th,P1);
+Vh uh, vh;
+problem chaleur( uh,vh,solver=LU) = int2d(Th)(dx(uh)*dx(vh)+ dy(uh)*dy(vh)) - int2d(Th)(f*vh) + on (1,2,3,4,uh=0);
+chaleur;
+plot(uh,fill=1);
+H1semiNorm[i]= sqrt(int2d(Th)((dx(uh)-uexactx)^2) + int2d(Th)((dy(uh)-uexacty)^2) );
+}
+for (int i=0;i<5;i++)
+cout << " H1semiNorm " << i << " = "<<  H1semiNorm[i] <<endl; 
+cout <<" taux de convergence = "<< log(H1semiNorm[0]/H1semiNorm[4])/log(16.)  <<endl;
+
+
+
+
+
+
+

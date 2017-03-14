@@ -1,0 +1,27 @@
+int Nbnoeuds = 10;
+
+//Omega=]0,1[² 
+border floor2(t=0,1){ x=0.5+0.5*t; y=0; label=1;}; 
+border right2(t=0,1){ x=1; y=t; label=1;};
+border ceiling2(t=1,0){ x=t; y=1; label=1;};
+border left2(t=1,0){ x=0; y=0.5*t+0.5; label=1;};
+
+//Omega = [1/2,1]²
+border ceilingint2(t=0,1){ x=0.5*t; y=0.5; label=1;};
+border rightint2(t=1,0){ x=0.5; y=0.5*t; label=1;};
+
+//Construction du maillage
+plot( floor2(Nbnoeuds)+right2(Nbnoeuds)+ceiling2(Nbnoeuds)+left2(Nbnoeuds)+ceilingint2(Nbnoeuds)+rightint2(Nbnoeuds));
+mesh Th= buildmesh(floor2(Nbnoeuds)+right2(Nbnoeuds)+ceiling2(Nbnoeuds)+left2(Nbnoeuds)+ceilingint2(Nbnoeuds)+rightint2(Nbnoeuds));
+plot(Th);
+
+//Mise en place du probleme
+fespace Vh(Th,P1);
+Vh uh,vh;
+
+//Introduction du probleme
+problem chaleur( uh,vh,solver=LU) = int2d(Th)(dx(uh)*dx(vh)+ dy(uh)*dy(vh)) - int2d(Th)(vh) + on (1,uh=0);
+
+//Resolution
+chaleur;
+plot(uh,wait=1);

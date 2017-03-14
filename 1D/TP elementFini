@@ -1,0 +1,15 @@
+int np=100; // on défini un entier
+mesh Th = square(np,1,[x,y/50]); // définition du domaine que l'on va mailler, carré avec 100=np points à l'horizontale, 1 point a la verticale, de paramétrisation x,y/50
+//square(horizontale, verticale, paramétrisation)
+
+plot(Th,wait=1); //tracé du maillage
+fespace Vh(Th,P1); // definit l'espace élément finis (maillage, type d'éléments finis)
+Vh u,v; // on prend u et v dans Vh
+func f=1.; //définition de la fonction 
+//on utilise func pour définir f ou la solution exacte
+
+solve Laplace1D(u,v) = int2d(Th)(dx(u)*dx(v)) - int2d(Th)(v*f) + on(2,4,u=0.); //dans solve on entre la formulation variationnelle ie : -u'' = f  
+// int2d car ce sont des intégrales en 2d ( car le domaine est 2d )
+// on( , , ) pour les conditions de dirichlet sur les bords 2 et 4 on a u=0( cd homogène);
+//les bords 2 et 4 correspondent à u=0 en 0 et 1 ;
+plot(u,wait=1,fill=1);

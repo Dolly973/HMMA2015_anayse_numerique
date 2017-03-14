@@ -1,0 +1,20 @@
+//Frontieres
+border floor(t=0,1){ x=t; y=0; label=1;}; // the unit square
+border right(t=0,1){ x=1; y=t; label=2;};
+border ceiling(t=1,0){ x=t; y=1; label=3;};
+border left(t=1,0){ x=0; y=t; label=4;}
+border cercle(t=0,2*pi){ x=0.5+0.2*cos(t); y=0.5+0.2*sin(t);label=5;}
+//Verification des bords
+plot(floor(50)+right(50)+ceiling(50)+left(50)+cercle(40));
+//Creation du maillage
+mesh Th = buildmesh(floor(50)+right(50)+ceiling(50)+left(50)+cercle(-40));
+//Trace du maillage
+plot(Th,wait=1);
+func f=x*y;
+fespace Vh(Th,P1);
+Vh uh,vh;
+//Introduction du probleme
+problem chaleur( uh,vh,solver=LU) = int2d(Th)(dx(uh)*dx(vh)+ dy(uh)*dy(vh)) - int2d(Th)(f*vh) + on (1,2,3,4,5,uh=0);
+//Resolution
+chaleur;
+plot(uh,wait=1,fill=1);
