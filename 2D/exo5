@@ -1,0 +1,29 @@
+int np = 20;
+real lambda = 13;
+real mu = 5.56;
+//real [int] f(2);
+//f = [0, -1];
+real f = -1;
+real sqrt2 = sqrt(2.);
+mesh Th = square (np, np, [4*x,y]);
+plot(Th,wait=1);
+
+fespace Vh(Th,P2);
+Vh u1,u2,vv1,vv2;                                                                            // fonctions normale u et v et fonctions tests uu vv
+macro epsilon(u1,u2)  [dx(u1),dy(u2),(dy(u1)+dx(u2))/sqrt2]       //fin du macro
+macro div(u1,u2) (dx(u1) + dy(u2))                                                      //fin du macro
+
+solve elasticite([u1,u2],[vv1,vv2])= int2d(Th)(lambda*div(u1,u2)*div(vv1,vv2)+2.*mu*((epsilon(u1,u2)')*epsilon(vv1,vv2) ) )- int2d(Th)(f*vv2)+ on(4,u1=0,u2=0);
+real coef=0.01;
+plot([u1,u2],wait=1);
+
+mesh th1 = movemesh(Th, [x+coef*u1, y+coef*u2]);
+plot(th1,wait=1);
+
+
+fespace Wh(Th,P1);
+Wh sigmavm:
+real trace= dx(u1)+dy(u2);
+macro sigma(u1,u2) [lambda*trace+2*mu*dx(u1) , lambda*trace + 2*mu*dy(u2), mu*(dy(u1)+dx(u2))] //
+
+sigmavm=sqrt(sigma(u1,u2)[0]^2-sigma(u1,u2)[0]*sigma(u1,u2)[1]+sigma(u1,u2)[]^2
