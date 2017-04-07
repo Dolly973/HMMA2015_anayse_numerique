@@ -1,0 +1,27 @@
+
+int np=10; // on défini un entier
+mesh Th = square(np,1,[x,y/50]); // définition du domaine que l'on va mailler, carré avec 10=np points à l'horizontale, 1 point a la verticale, de paramétrisation x,y/50
+//On définit les constantes
+real epsilon=0.1;
+real lambda=1;
+
+//plot(Th,wait=1); //tracé du maillage
+
+fespace Vh(Th,P1); // definit l'espace élément finis (maillage, type d'éléments finis)
+Vh u,v; // on prend u et v dans Vh
+func f=1.; //définition de la fonction 
+
+
+//RESOLUTION MATRICIELLE
+
+varf a(u,v) = int2d(Th)(epsilon*dx(u)*dx(v)) +int2d(Th)(lambda*dx(u)*v)- int2d(Th)(v*f) + on(2,4,u=0.);
+matrix A= a(Vh,Vh);
+varf l(unused,v) = int2d(Th)(f*v) +on( 2,4,unused = 0 ); 
+real[int] B=l(0,Vh);
+u[]= A^(-1)*B;
+plot(u,wait=1,fill=1);
+//- Square mesh : nb vertices =22 , nb triangles = 20 , nb boundary edges 22
+GMRES converges: 18 1.43951e-16 0.212132 6.78591e-16 < 1e-06
+times: compile 0.147s, execution 0.154s, mpirank:0
+CodeAlloc : nb ptr 2589, size :161892 mpirank: 0
+Ok: Normal End
