@@ -1,0 +1,37 @@
+int np=10; // on défini un entier
+//On définit les variables
+
+real eps=0.1;
+real la=1;
+func f=1.;
+func uexact =(f/la)*(1/((exp(la/eps -1) )*(1-exp((la/eps)*x)) + x));
+func uexactx =  (f/la)*(1/((exp(la/eps -1) )*(-(la/eps)*exp((la/eps)*x)) + 1));
+
+//boucle
+real[int] l2norm(10);
+for (int i=0; i<10 ;i++)
+{
+mesh Th=square(np+10*i,1,[x,y/50]);
+fespace Vh(Th,P1); // definit l'espace élément finis (maillage, type d'éléments finis)
+Vh u,v; // on prend u et v dans Vh
+solve Chaleur(u,v,solver=LU)=int2d(Th)(eps*dx(u)*dx(v)) +int2d(Th)(la*dx(u)*v)- int2d(Th)(v*f) + on(2,4,u=0.);
+plot(u,fill=1);
+l2norm[i]= sqrt(int2d(Th)((u-uexact)^2));
+}
+for (int i=0;i<10;i++)
+cout << " l2norm " << i << " = "<<  l2norm[i] <<endl; 
+cout <<" taux de convergence = "<< log(l2norm[0]/l2norm[4])/log(16.) <<endl;
+
+real[int]  H1semiNorm(10);
+for (int i= 0; i<10 ;i++)
+{ 
+mesh Th=square(np+10*i,1,[x,y/50]);
+fespace Vh(Th,P1);
+Vh u, v;
+solve Chaleur(u,v,solver=LU)=int2d(Th)(eps*dx(u)*dx(v)) +int2d(Th)(la*dx(u)*v)- int2d(Th)(v*f) + on(2,4,u=0.);
+plot(u,fill=1);
+H1semiNorm[i]= sqrt(int2d(Th)((dx(u)-uexactx)^2)) ;
+}
+for (int i=0;i<10;i++)
+cout << " H1semiNorm " << i << " = "<<  H1semiNorm[i] <<endl; 
+cout <<" taux de convergence = "<< log(H1semiNorm[0]/H1semiNorm[4])/log(16.) <<endl;
