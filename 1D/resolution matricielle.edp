@@ -1,0 +1,18 @@
+nt np=100; // on défini un entier
+mesh Th = square(np,1,[x,y/50]); // définition du domaine que l'on va mailler, carré avec 100=np points à l'horizontale, 1 point a la verticale, de paramétrisation x,y/50
+//square(horizontale, verticale, paramétrisation)
+
+plot(Th,wait=1); //tracé du maillage
+fespace Vh(Th,P1); // definit l'espace élément finis (maillage, type d'éléments finis)
+Vh u,v; // on prend u et v dans Vh
+func f=1.; //définition de la fonction 
+//on utilise func pour définir f ou la solution exacte
+
+//RESOLUTION MATRICIELLE
+
+varf a(u,v) = int2d(Th)(dx(u)*dx(v)) + on(2,4,u=0.);
+matrix A= a(Vh,Vh);
+varf l(unused,v) = int2d(Th)(f*v) +on( 2,4,unused = 0 ); 
+real[int] B=l(0,Vh);
+u[]= A^(-1)*B;
+plot(u,wait=1,fill=1);
