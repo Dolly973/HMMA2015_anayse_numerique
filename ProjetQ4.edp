@@ -1,0 +1,17 @@
+
+int np=10; // on défini un entier
+mesh Th = square(np,1,[x,y/50]); // définition du domaine que l'on va mailler, carré avec 10=np points à l'horizontale, 1 point a la verticale, de paramétrisation x,y/50
+//On définit les constantes
+real epsilon=0.1;
+real lambda=1;
+
+plot(Th,wait=1); //tracé du maillage
+
+fespace Vh(Th,P1); // definit l'espace élément finis (maillage, type d'éléments finis)
+Vh u,v; // on prend u et v dans Vh
+func f=1.; //définition de la fonction 
+
+
+solve chaleu1D(u,v) = int2d(Th)(epsilon*dx(u)*dx(v)) +int2d(Th)(lambda*dx(u)*v)- int2d(Th)(v*f) + on(2,4,u=0.); 
+//les bords 2 et 4 correspondent à u=0 en 0 et 1 ;
+plot(u,wait=1,fill=1);
