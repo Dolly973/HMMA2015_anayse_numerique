@@ -7,6 +7,9 @@ func f=1.;
 func uexact =(f/la)*(1/((exp(la/eps -1) )*(1-exp((la/eps)*x)) + x));
 func uexactx =  (f/la)*(1/((exp(la/eps -1) )*(-(la/eps)*exp((la/eps)*x)) + 1));
 
+func uexact=(f/la)*((1/(exp(la/eps)-1))*(1-exp((la/eps)*x))+x);
+func uexactx =  (f/la)*(1/(exp(la/eps)-1))*(-(la/eps)*exp((la/eps)*x) + 1);
+
 //boucle
 real[int] l2norm(10);
 for (int i=0; i<10 ;i++)
