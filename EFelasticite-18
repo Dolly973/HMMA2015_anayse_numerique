@@ -1,0 +1,15 @@
+int N=50;
+real mu=5.56;
+real l=13;
+real sqrt2=sqrt(2.);
+real c=0.1;
+macro eps(u1,u2) [dx(u1),dy(u2),(dy(u1)+dx(u2))/sqrt2] //
+macro div(u,v) (dx(u)+dy(v))//
+mesh Th= square(N,1,[4*x,y]);
+plot (Th);
+fespace Vh(Th,P2);
+Vh u,v,uu,vv;
+solve lame([u,v],[uu,vv])= int2d(Th)(l*div(u,v)*div(uu,vv)+2.*mu*(eps(u,v)'*eps(uu,vv)))-int2d(Th)(-vv)+ on(4,u=0,v=0);
+plot([u,v]);
+mesh Th1 = movemesh(Th,[x+u*c, y+v*c]);
+plot(Th1);
