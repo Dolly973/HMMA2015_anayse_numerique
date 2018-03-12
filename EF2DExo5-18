@@ -1,0 +1,23 @@
+int Nb=100;
+//Omega=]0,1[² 
+border bas(t=0,1){ x=t; y=0; label=1;}; 
+border GrandDroite(t=0,0.5){ x=1; y=t; label=1;};
+border PetitHaut(t=1,0.5){ x=t; y=0.5; label=1;};
+border PetitDroite(t=0.5,1){ x=0.5; y=t; label=1;};
+border haut(t=0.5,0){ x=t; y=1; label=1;};
+border gauche(t=1,0){ x=0; y=t; label=1;};
+
+
+
+plot( bas(Nb)+GrandDroite(Nb)+PetitDroite(Nb)+haut(Nb)+gauche(Nb)+PetitHaut(Nb));
+mesh Th=buildmesh ( bas(Nb)+GrandDroite(Nb)+PetitDroite(Nb)+haut(Nb)+gauche(Nb)+PetitHaut(Nb));
+plot(Th);
+fespace Vh(Th,P1);
+Vh uh,vh;
+
+//Introduction du probleme
+problem chaleur( uh,vh,solver=LU) = int2d(Th)(dx(uh)*dx(vh)+ dy(uh)*dy(vh)) - int2d(Th)(vh) + on (1,uh=0);
+
+//Resolution
+chaleur;
+plot(uh,wait=1);
