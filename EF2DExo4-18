@@ -1,0 +1,19 @@
+int N=50;
+func f=x*y;
+//Creation du carre unité
+border bas(t=0,1){x=t; y=0; label=1;};
+border droit(t=0,1){x=1;y=t ; label =2;};
+border gauche(t=1,0){x=0;y=t; label=4;};
+border haut(t=1,0){x=t; y=1;label=3;};
+//Creation du cercle de rayon 0.2
+border cercle(t=0,2*pi){x=0.5+0.2*cos(t); y=0.5+0.2*sin(t);label=5;};
+//Verification du tracé
+plot(bas(N)+gauche(N)+droit(N)+haut(N)+cercle(N));
+//Creation maillage 
+mesh Th= buildmesh(bas(N)+gauche(N)+droit(N)+haut(N)+cercle(-N));
+//Tracé maillage
+plot (Th,wait=1);
+fespace Vh(Th,P1);
+Vh uh,vh;
+solve chaleur(uh,vh,solver=LU)=int2d(Th)(dx(uh)*dx(vh)+dy(uh)*dy(vh))-int2d(Th)(f*vh)+on(1,2,3,4,5,uh=0);;
+plot(uh,wait=1);
