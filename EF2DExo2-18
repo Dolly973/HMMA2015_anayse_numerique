@@ -1,0 +1,8 @@
+int Nbnoeuds=50;
+func f=x*y;
+mesh Th=square(Nbnoeuds,Nbnoeuds, [2*x-1,2*y-1]);
+plot (Th,wait=1);
+fespace Vh(Th,P1);
+Vh uh,vh;
+solve chaleur(uh,vh,solver=LU)=int2d(Th)(dx(uh)*dx(vh)+dy(uh)*dy(vh))-int2d(Th)(f*vh);
+plot(uh,wait=1);

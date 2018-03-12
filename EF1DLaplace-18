@@ -1,0 +1,10 @@
+int np=100; //nombres sous intervalles
+mesh Th = square(np,1,[x,y/50]); // creation maillage carre 
+plot(Th,wait=1); // trace le maillage
+fespace Vh(Th,P1); // definition espace avec elements fini P1
+Vh u,v; //on prends u et v dans l'espace
+func f=1.; 
+solve Laplace1D(u,v) = int2d(Th)(dx(u)*dx(v)) - int2d(Th)(v*f) + on(2,4,u=0.); //resolution equation de laplace
+plot(u,wait=1,fill=1);
+ //on = condition de dirichlet
+//bords 2 et 4 a gauche et a droite 

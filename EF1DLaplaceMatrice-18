@@ -1,0 +1,12 @@
+int np=100; //nombres sous intervalles
+mesh Th = square(np,1,[x,y/50]); // creation maillage carre 
+plot(Th,wait=1); // trace le maillage
+fespace Vh(Th,P1); // definition espace avec elements fini P1
+Vh u,v; //on prends u et v dans l'espace
+func f=1.; 
+varf a(u,v)=int2d(Th)(dx(u)*dx(v))+on(2,4,u=0.); //on definit la forme bilineaire 
+ matrix A=a(Vh,Vh);//on definit la matrice
+varf l(unused,v) =int2d(Th)(f*v)+on(2,4,unused=0.);//on definit la forme linéaire
+real[int] B=l(0,Vh); // creation vecteur second membre
+u[]= A^(-1)*B; // u[] c'est un vecteur . A la base on avait A*u=B 
+plot(u,fill=1);//trace la solution
