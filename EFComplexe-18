@@ -1,0 +1,14 @@
+int Nb = 100;
+real s=57*1e6;
+real u=4*pi*1e-7;
+real eps= 8.8*1e-12;
+real w= 100*pi;
+border cercle(t=0,2*pi){x=0.1*cos(t);y=0.1*sin(t);};
+mesh Th=buildmesh(cercle(Nb));
+plot (Th);
+
+fespace Vh(Th,P1);
+Vh<complex> e,v;
+problem helmholtz(e,v,solver=LU)=int2d(Th)((1/u)*(dx(e)*dx(v)+dy(e)*dy(v)))+int2d(Th)((1i*w*s -w^2*eps)*e*v)+on(cercle,e=(1/s));
+helmholtz;
+plot(e, wait=1);
