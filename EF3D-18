@@ -1,0 +1,9 @@
+load "msh3"
+int N=100;
+mesh3 Th=cube(3,4,5);
+plot(Th,wait=1);
+func f=100.;
+fespace Vh(Th,P13d);
+Vh uh,vh;
+solve chaleur(uh,vh,solver=LU)=int3d(Th)(dx(uh)*dx(vh)+dy(uh)*dy(vh)+dz(uh)*dz(vh))+int2d(Th,2)(0.25*25*uh*vh)-int2d(Th,2)(0.25*25*vh)-int3d(Th)(f*vh);
+plot(uh,wait=1);
