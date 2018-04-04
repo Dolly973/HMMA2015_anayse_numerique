@@ -1,0 +1,32 @@
+int n=50;
+int labelR=99;
+//Creation du four
+border bas(t=0,1){x=2*t-1;y=-1;label=1;};
+border droit(t=0,1){x=1;y=2*t-1;label=2;};
+border haut(t=1,0){x=2*t-1;y=1;label=3;};
+border gauche(t=1,0){x=-1;y=2*t-1;label=4;};
+//Creation de l'objet
+border basO(t=0,1){x=t-0.5;y=-0.2;label=22;};
+border droitO(t=0,1){x=0.5;y=0.4*t-0.2;label=22;};
+border hautO(t=1,0){x=t-0.5;y=0.2;label=22;};
+border gaucheO(t=1,0){x=-0.5;y=0.4*t-0.2;label=22;};
+//Creation des resistances
+border r1(t=0,2*pi){x=0.75+0.05*cos(t); y=0.75+0.05*sin(t);label=labelR;};
+border r2(t=0,2*pi){x=0.75+0.05*cos(t); y=-0.75+0.05*sin(t);label=labelR;};
+border r3(t=0,2*pi){x=-0.75+0.05*cos(t); y=-0.75+0.05*sin(t);label=labelR;};
+border r4(t=0,2*pi){x=-0.75+0.05*cos(t); y=0.75+0.05*sin(t);label=labelR;};
+//Creation du maillage
+mesh Th=buildmesh(bas(n)+droit(n)+haut(n)+gauche(n)+basO(n)+droitO(n)+hautO(n)+gaucheO(n)+r1(-n)+r2(-n)+r3(-n)+r4(-n));
+//tracé du maillage
+plot (Th);
+// On se place dans l'espace Vh avec des EF P1
+fespace Vh (Th,P1);
+Vh T,v;	//On prends T et v dans Vh
+real Tf=2500;
+Vh labelres=region;
+Vh IdF = (region == labelR ) ? 1 : 0 ;
+Vh K=1+9*(x>-0.5 & x<0.5)*(y>-0.2 & y<0.2); // La constante de conductivite thermique est de 1 dans le four et 10 dans l'objet
+//plot(K,wait=1);
+solve chaleur(T,v,solver=LU)=int2d(Th)(K*(dx(T)*dx(v)+dy(T)*dy(v)))+int2d(Th,labelR)(T*v)-int1d(Th,labelR)(Tf*v)-int2d(Th)(IdF*v)+on(1,T=100)+on(3,T=50);
+//Tracé de la solution
+plot (T,wait=1,value=1,fill=true);
